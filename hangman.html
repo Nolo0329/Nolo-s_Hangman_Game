@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nolo's Hangman</title>
+
+    <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffe6f0; /* Soft pink */
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #d63384; /* Deep pink */
+      font-size: 2.5rem;
+    }
+    #word {
+      font-size: 2rem;
+      letter-spacing: 0.5rem;
+      color: #cc3366;
+    }
+    #letters button {
+      margin: 0.25rem;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #ffb6c1;
+      color: #fff;
+      transition: background-color 0.3s;
+    }
+    #letters button:hover:not(:disabled) {
+      background-color: #ff69b4;
+    }
+    #letters button:disabled {
+      background-color: #f8c8dc;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 1rem;
+      font-size: 1.3rem;
+      color: #99004d;
+    }
+    #resetBtn {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #f06292;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #resetBtn:hover {
+      background-color: #ec407a;
+    }
+  </style>
+</head>
+<body>
+    <h1>🎉Nolo's  Hangman Game 🎉</h1>
+    <div id="word"></div>
+    <div id="letters"></div>
+    <div id="status"></div>
+    <button id="resetBtn" onclick="startGame()">Restart Game</button>
+
+     <script>
+    const wordList = ['javascript', 'hangman', 'developer', 'function', 'variable', 'object',
+  'browser', 'console', 'internet', 'frontend', 'backend', 'loop',
+  'array', 'element', 'button', 'debug', 'github', 'syntax', 'compile',
+  'execute', 'script', 'html', 'style', 'design', 'keyboard', 'network',
+  'server', 'database', 'python', 'react', 'module', 'virtual', 'boolean',
+  'logic', 'terminal', 'framework', 'api', 'cloud', 'storage', 'bit',
+  'binary', 'router', 'upload', 'download', 'stack', 'queue', 'node', 'coffee', 'sunshine', 'blanket', 'giraffe', 'cookies', 'rainbow', 'pencil',
+  'holiday', 'library', 'laptop', 'bicycle', 'window', 'garden', 'notebook',
+  'butterfly', 'calendar', 'mirror', 'candle', 'backpack', 'shampoo',
+  // Fun/Random
+  'unicorn', 'pajamas', 'fireworks', 'bubblegum', 'popcorn', 'scooter',
+  'monster', 'zombie', 'dragon', 'whistle', 'mystery', 'adventure', 'sparkle',
+  'puzzle', 'treasure', 'moonlight', 'icecream', 'flamingo', 'penguin'];
+    let chosenWord = '';
+    let guessedLetters = [];
+    let wrongGuesses = 0;
+    const maxWrong = 6;
+
+    function startGame() {
+      chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
+      guessedLetters = [];
+      wrongGuesses = 0;
+      document.getElementById('status').textContent = '';
+      createLetterButtons();
+      updateWordDisplay();
+    }
+
+    function createLetterButtons() {
+      const container = document.getElementById('letters');
+      container.innerHTML = '';
+      for (let i = 65; i <= 90; i++) {
+        const letter = String.fromCharCode(i).toLowerCase();
+        const btn = document.createElement('button');
+        btn.textContent = letter;
+        btn.onclick = () => handleGuess(letter, btn);
+        container.appendChild(btn);
+      }
+    }
+
+    function handleGuess(letter, button) {
+      button.disabled = true;
+      if (chosenWord.includes(letter)) {
+        guessedLetters.push(letter);
+      } else {
+        wrongGuesses++;
+      }
+      updateWordDisplay();
+      checkGameOver();
+    }
+
+    function updateWordDisplay() {
+      const display = chosenWord
+        .split('')
+        .map(letter => (guessedLetters.includes(letter) ? letter : '_'))
+        .join(' ');
+      document.getElementById('word').textContent = display;
+    }
+
+    function checkGameOver() {
+      const display = document.getElementById('word').textContent.replace(/\s/g, '');
+      if (display === chosenWord) {
+        document.getElementById('status').textContent = '🎀 You won! 🎀';
+        disableAllButtons();
+      } else if (wrongGuesses >= maxWrong) {
+        document.getElementById('status').textContent = `😢💔 Game Over! The word was "${chosenWord}"`;
+        disableAllButtons();
+      }
+    }
+
+    function disableAllButtons() {
+      document.querySelectorAll('#letters button').forEach(btn => btn.disabled = true);
+    }
+
+
+    startGame();
+  </script>
+</body>
+</html>
